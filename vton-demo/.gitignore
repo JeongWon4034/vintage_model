@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 크롤/생성 데이터 (모델 샘플 제외)
+data/garments/*
+data/results/*
+!data/garments/.gitkeep
+!data/results/.gitkeep
+
+# rembg 다운로드 모델 캐시
+.u2net/

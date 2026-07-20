@@ -1,0 +1,22 @@
+# --- VTON demo dependencies ---
+# HF Space 호출 (실제 오픈 diffusion 모델 IDM-VTON 구동)
+gradio_client>=1.5.0
+
+# 크롤러 (fruitsfamily는 React SPA라 렌더링 필요)
+playwright>=1.44.0
+
+# 옷 이미지 배경 제거 (전처리)
+rembg>=2.0.59
+onnxruntime>=1.17.0
+
+# 이미지 처리
+pillow>=10.0.0
+
+# 웹 뷰어
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+
+# 설정/유틸
+pyyaml>=6.0
+python-dotenv>=1.0.0
+httpx>=0.27.0

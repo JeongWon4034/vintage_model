@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    image: vton-demo
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # 소스 + 결과 데이터를 호스트와 공유 (결과 이미지가 호스트에 남음)
+      - ./:/app
+    # 기본 command 는 Dockerfile 의 uvicorn.
+    # 파이프라인 실행:  docker compose run --rm app python scripts/run_demo.py --count 3

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VTON 데모 — 빈티지 아이템 가상 피팅</title>
+  <style>
+    :root { --bg:#0f1115; --card:#181b22; --line:#262b36; --fg:#e8eaed; --sub:#9aa4b2; --accent:#7c5cff; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg);
+           font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,sans-serif; }
+    header { padding:24px 28px; border-bottom:1px solid var(--line); }
+    h1 { margin:0 0 6px; font-size:20px; }
+    header .meta { color:var(--sub); font-size:13px; }
+    .wrap { padding:24px 28px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:20px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); }
+    .cell { background:var(--card); padding:10px; text-align:center; }
+    .cell img { width:100%; height:150px; object-fit:contain; background:#0b0d11; border-radius:8px; }
+    .cell span { display:block; margin-top:6px; color:var(--sub); font-size:11px; }
+    .result { padding:12px; position:relative; }
+    .result img { width:100%; height:360px; object-fit:contain; background:#0b0d11; border-radius:10px; }
+    .badge { position:absolute; top:20px; left:20px; background:rgba(124,92,255,.9);
+             color:#fff; font-size:11px; padding:4px 9px; border-radius:999px; }
+    .fail { padding:16px; color:#ff8080; font-size:13px; }
+    .foot { display:flex; justify-content:space-between; padding:10px 14px; border-top:1px solid var(--line);
+            color:var(--sub); font-size:12px; }
+    .empty { color:var(--sub); padding:40px; text-align:center; line-height:1.7; }
+    code { background:#000; padding:2px 6px; border-radius:5px; color:#cdd3dd; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🧥 빈티지 아이템 가상 피팅 — VTON 데모</h1>
+    <div class="meta" id="meta">불러오는 중…</div>
+  </header>
+  <div class="wrap">
+    <h2 style="font-size:15px;color:var(--sub);margin:0 0 12px">고정 모델 (드래그하면 회전)</h2>
+    <div class="grid" id="modelGrid" style="margin-bottom:28px"></div>
+    <h2 style="font-size:15px;color:var(--sub);margin:0 0 12px">가상 피팅 결과</h2>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <script src="/static/viewer.js"></script>
+  <script>
+    const imgUrl = (kind, name) => `/img/${kind}/${encodeURIComponent(name)}`;
+
+    async function loadModels() {
+      const grid = document.getElementById('modelGrid');
+      let res;
+      try { res = await (await fetch('/api/models')).json(); }
+      catch { grid.innerHTML = ''; return; }
+      grid.innerHTML = '';
+      for (const m of res.models || []) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const holder = document.createElement('div');
+        holder.className = 'result';
+        holder.style.cursor = 'ew-resize';
+        card.appendChild(holder);
+        const foot = document.createElement('div');
+        foot.className = 'foot';
+        foot.innerHTML = `<span>${m.stem}</span><span>${m.frames.length > 1 ? m.frames.length + '컷 회전' : '정면만'}</span>`;
+        card.appendChild(foot);
+        grid.appendChild(card);
+        const frames = (m.frames.length ? m.frames : [m.name]).map(f =>
+          imgUrl(m.frames.length ? 'angle' : 'model', f));
+        const sv = new SpinViewer(holder, frames);
+        sv.img.style.height = '360px';
+        sv.img.style.objectFit = 'contain';
+        sv.img.style.background = '#0b0d11';
+        sv.img.style.borderRadius = '10px';
+      }
+    }
+
+    async function load() {
+      const meta = document.getElementById('meta');
+      const grid = document.getElementById('grid');
+      let res;
+      try {
+        const r = await fetch('/api/results');
+        if (!r.ok) throw new Error(`API ${r.status}`);
+        res = await r.json();
+      } catch (e) {
+        meta.textContent = '서버 연결 실패';
+        grid.innerHTML = `<div class="empty">
+          ⚠️ API(<code>/api/results</code>)에 연결할 수 없습니다.<br><br>
+          이 페이지는 <b>파일로 직접 열면 동작하지 않습니다.</b><br>
+          프로젝트 루트에서 서버를 띄우고 주소로 접속하세요:<br><br>
+          <code>cd vton-demo && uvicorn app.server:app --port 8000</code><br>
+          → <a href="http://localhost:8000" style="color:#7c5cff">http://localhost:8000</a>
+        </div>`;
+        return;
+      }
+      const items = res.items || [];
+      const ok = items.filter(i => i.ok).length;
+      const when = res.generated_at
+        ? new Date(res.generated_at * 1000).toLocaleString('ko-KR') : '-';
+      meta.textContent = `모델: ${res.space}  ·  성공 ${ok}/${items.length}  ·  생성 ${when}`;
+
+      if (!items.length) {
+        grid.innerHTML = `<div class="empty">
+          아직 결과가 없습니다.<br>
+          <code>python scripts/run_demo.py --count 3</code> 을 먼저 실행하세요.
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(it => `
+        <div class="card">
+          <div class="row">
+            <div class="cell"><img src="${imgUrl('model', it.model)}" alt="model"><span>모델</span></div>
+            <div class="cell"><img src="${imgUrl('garment', it.garment)}" alt="garment"><span>상품(빈티지)</span></div>
+          </div>
+          <div class="result">
+            ${it.ok
+              ? `<span class="badge">AI 가상 피팅</span>
+                 <img src="${imgUrl('result', it.result)}?t=${Date.now()}" alt="result">`
+              : `<div class="fail">피팅 실패<br><small>${(it.error||'').slice(0,160)}</small></div>`}
+          </div>
+          <div class="foot">
+            <span>${it.model} × ${it.garment}</span>
+            <span>${it.seconds != null ? it.seconds + 's' : ''}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    loadModels();
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# ============ VTON 데모 설정 ============
+
+# --- VTON 백엔드 (HF Space) ---
+vton:
+  # 1순위 Space. 여기가 다운/변경되면 아래 fallbacks 로 자동 재시도.
+  space: "yisol/IDM-VTON"
+  fallbacks:
+    - "AI-Platform/Virtual-Try-On"
+    - "kadirnar/IDM-VTON"
+  api_name: "/tryon"     # gradio 엔드포인트 이름
+  denoise_steps: 30
+  seed: 42
+  auto_mask: true        # IDM-VTON 자동 인물 마스킹 사용
+  crop: false            # 결과 crop 여부
+  timeout_sec: 600       # Space 큐/콜드스타트 대기 허용치
+
+# --- 크롤러 ---
+crawler:
+  # 크롤 시작 URL. 상품 그리드가 있는 검색/카테고리 페이지여야 상품컷이 나온다.
+  # (홈 '/' 은 배너 위주라 상품 이미지가 거의 없음)
+  start_urls:
+    - "https://fruitsfamily.com/search?gender=WOMEN&sort=POPULAR&subcategoryIds=1,6,5,4,2,3,172,7,8,9,65"
+  image_host: "image.production.fruitsfamily.com"   # 이 호스트 이미지만 수집
+  # 상품 카드 이미지 경로 조각(하나라도 포함되면 상품컷으로 간주). 배너/브랜드로고 제외용.
+  image_path_include:
+    - "/product/"
+    - "/collection/"
+  image_path_exclude:
+    - "/banner/"
+    - "/brand/"
+    - "/profile/"
+  default_count: 5
+  min_width: 300          # 썸네일/아이콘 제거용 최소 가로폭(px)
+  prefer_portrait: true   # 세로형(상품컷) 우선
+  garment_only: true      # 얼굴 검출로 착용샷 제외 (행거샷/플랫레이만 수집)
+  request_delay_sec: 1.0  # 예의상 요청 간 간격
+  headless: true
+
+# --- 전처리 ---
+preprocess:
+  remove_background: true   # rembg 로 옷 배경 제거
+  bg_color: [255, 255, 255] # 제거 후 채울 배경색 (VTON 은 흰 배경 상품컷을 선호)
+
+# --- 경로 (프로젝트 루트 기준) ---
+paths:
+  models_dir: "models"
+  garments_dir: "data/garments"
+  results_dir: "data/results"

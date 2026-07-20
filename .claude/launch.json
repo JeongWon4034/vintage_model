@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vton-gallery",
+      "runtimeExecutable": "uvicorn",
+      "runtimeArgs": ["app.server:app", "--port", "8000"],
+      "cwd": "vton-demo",
+      "port": 8000
+    }
+  ]
+}

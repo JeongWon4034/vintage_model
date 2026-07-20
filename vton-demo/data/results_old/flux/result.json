@@ -1,0 +1,86 @@
+{
+  "generated_at": 1784359836.514782,
+  "space": "yisol/IDM-VTON",
+  "items": [
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_01.jpg",
+      "result": "female_avg_01__garment_01.png",
+      "ok": true,
+      "error": null,
+      "seconds": 33.3
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_02.jpg",
+      "result": "female_avg_01__garment_02.png",
+      "ok": true,
+      "error": null,
+      "seconds": 23.2
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_03.jpg",
+      "result": "female_avg_01__garment_03.png",
+      "ok": true,
+      "error": null,
+      "seconds": 22.9
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_04.jpg",
+      "result": "female_avg_01__garment_04.png",
+      "ok": true,
+      "error": null,
+      "seconds": 21.9
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_05.jpg",
+      "result": "female_avg_01__garment_05.png",
+      "ok": true,
+      "error": null,
+      "seconds": 21.9
+    },
+    {
+      "model": "male_avg_01.jpg",
+      "garment": "garment_01.jpg",
+      "result": "male_avg_01__garment_01.png",
+      "ok": true,
+      "error": null,
+      "seconds": 22.0
+    },
+    {
+      "model": "male_avg_01.jpg",
+      "garment": "garment_02.jpg",
+      "result": "male_avg_01__garment_02.png",
+      "ok": true,
+      "error": null,
+      "seconds": 21.7
+    },
+    {
+      "model": "male_avg_01.jpg",
+      "garment": "garment_03.jpg",
+      "result": "male_avg_01__garment_03.png",
+      "ok": true,
+      "error": null,
+      "seconds": 22.4
+    },
+    {
+      "model": "male_avg_01.jpg",
+      "garment": "garment_04.jpg",
+      "result": "male_avg_01__garment_04.png",
+      "ok": true,
+      "error": null,
+      "seconds": 21.6
+    },
+    {
+      "model": "male_avg_01.jpg",
+      "garment": "garment_05.jpg",
+      "result": "male_avg_01__garment_05.png",
+      "ok": true,
+      "error": null,
+      "seconds": 21.8
+    }
+  ]
+}

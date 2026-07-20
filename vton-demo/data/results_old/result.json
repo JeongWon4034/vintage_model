@@ -1,0 +1,38 @@
+{
+  "generated_at": 1784358705.777754,
+  "space": "yisol/IDM-VTON",
+  "items": [
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_01.jpg",
+      "result": "model_01__garment_01.png",
+      "ok": true,
+      "error": null,
+      "seconds": 79.3
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_02.jpg",
+      "result": "model_01__garment_02.png",
+      "ok": true,
+      "error": null,
+      "seconds": 36.8
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_03.jpg",
+      "result": "model_01__garment_03.png",
+      "ok": true,
+      "error": null,
+      "seconds": 34.8
+    },
+    {
+      "model": "female_avg_01.jpg",
+      "garment": "garment_04.jpg",
+      "result": "female_avg_01__garment_04.png",
+      "ok": true,
+      "error": null,
+      "seconds": 38.6
+    }
+  ]
+}
