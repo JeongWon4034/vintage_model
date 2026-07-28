@@ -1,0 +1,114 @@
+{
+  "note": "프론트 개발용 축소 샘플. 원본은 data/results (git 제외).",
+  "model": "model.jpg",
+  "items": [
+    {
+      "garment_key": "K_footwork_tee",
+      "garment": "K_footwork_tee__garment.jpg",
+      "result": "K_footwork_tee__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "E_red_suede",
+      "garment": "E_red_suede__garment.jpg",
+      "result": "E_red_suede__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "I_carhartt_denim",
+      "garment": "I_carhartt_denim__garment.jpg",
+      "result": "I_carhartt_denim__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "G_suede_shearling",
+      "garment": "G_suede_shearling__garment.jpg",
+      "result": "G_suede_shearling__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "H_pleated_olive",
+      "garment": "H_pleated_olive__garment.jpg",
+      "result": "H_pleated_olive__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "F_puffer_vest",
+      "garment": "F_puffer_vest__garment.jpg",
+      "result": "F_puffer_vest__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    },
+    {
+      "garment_key": "D_plaid_flannel",
+      "garment": "D_plaid_flannel__garment.jpg",
+      "result": "D_plaid_flannel__result.jpg",
+      "garment_size": [
+        620,
+        620
+      ],
+      "result_size": [
+        960,
+        1280
+      ]
+    }
+  ],
+  "length_series": [
+    {
+      "length_cm": 58,
+      "result": "len_redsuede_58.png",
+      "sample": "length_58.jpg"
+    },
+    {
+      "length_cm": 70,
+      "result": "len_redsuede_70.png",
+      "sample": "length_70.jpg"
+    },
+    {
+      "length_cm": 85,
+      "result": "len_redsuede_85.png",
+      "sample": "length_85.jpg"
+    }
+  ]
+}

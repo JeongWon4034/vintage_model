@@ -12,6 +12,10 @@ onnxruntime>=1.17.0
 # 이미지 처리
 pillow>=10.0.0
 
+# 모델 계측(실루엣/px per cm) + 총장 마스크 생성 — vton/metrics.py, vton/masking.py
+opencv-python>=4.9.0
+numpy>=1.26.0
+
 # 웹 뷰어
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0

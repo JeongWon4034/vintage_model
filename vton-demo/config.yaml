@@ -18,8 +18,15 @@ vton:
 crawler:
   # 크롤 시작 URL. 상품 그리드가 있는 검색/카테고리 페이지여야 상품컷이 나온다.
   # (홈 '/' 은 배너 위주라 상품 이미지가 거의 없음)
+  # VTON 이 잘하는 "질감 위주" 아이템을 키워드로 타겟 (프린트/그래픽은 약하므로 제외)
   start_urls:
-    - "https://fruitsfamily.com/search?gender=WOMEN&sort=POPULAR&subcategoryIds=1,6,5,4,2,3,172,7,8,9,65"
+    - "https://fruitsfamily.com/search?q=니트"
+    - "https://fruitsfamily.com/search?q=플리스"
+    - "https://fruitsfamily.com/search?q=코듀로이"
+    - "https://fruitsfamily.com/search?q=스웨이드"
+    - "https://fruitsfamily.com/search?q=무스탕"
+    - "https://fruitsfamily.com/search?q=가죽자켓"
+    - "https://fruitsfamily.com/search?q=플란넬"
   image_host: "image.production.fruitsfamily.com"   # 이 호스트 이미지만 수집
   # 상품 카드 이미지 경로 조각(하나라도 포함되면 상품컷으로 간주). 배너/브랜드로고 제외용.
   image_path_include:
@@ -30,11 +37,18 @@ crawler:
     - "/brand/"
     - "/profile/"
   default_count: 5
-  min_width: 300          # 썸네일/아이콘 제거용 최소 가로폭(px)
+  min_width: 600          # 썸네일/아이콘 제거용 최소 가로폭(px). CDN 원본이 620px 이므로 600 이 상한선
   prefer_portrait: true   # 세로형(상품컷) 우선
-  garment_only: true      # 얼굴 검출로 착용샷 제외 (행거샷/플랫레이만 수집)
+  garment_only: false     # true 면 mediapipe 로 착용샷 제외(미설치 시 에러). false = 전부 수집 후 수동 셀렉
   request_delay_sec: 1.0  # 예의상 요청 간 간격
   headless: true
+
+# --- 모델(사람) 스펙 ---
+# 실측(cm) → 픽셀 환산의 기준. 모델 사진을 바꾸면 키만 여기서 수정하면 된다.
+model_spec:
+  height_cm: 168        # 모델 키
+  shoulder_cm: 38       # 어깨 너비 (핏 판정용)
+  chest_cm: 84          # 가슴 둘레 (핏 판정용)
 
 # --- 전처리 ---
 preprocess:

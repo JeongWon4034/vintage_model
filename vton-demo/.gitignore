@@ -3,12 +3,19 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+.DS_Store
 
-# 크롤/생성 데이터 (모델 샘플 제외)
+# 크롤/생성 데이터 (경량 샘플 data/samples 는 커밋한다)
 data/garments/*
 data/results/*
+data/masks/
+data/linked/
 !data/garments/.gitkeep
 !data/results/.gitkeep
+!data/results/result.json
+
+# 힉스필드 원본 다운로드 파일명 (models/female_hf_01.png 로 정리해서 사용)
+models/hf_2*.png
 
 # rembg 다운로드 모델 캐시
 .u2net/

@@ -1,0 +1,56 @@
+{
+  "_note": "옷 실측. source=crawled 는 판매자 상세페이지에서 파싱한 실제 실측, manual_estimate 는 사진을 보고 넣은 추정치(크롤러 붙이기 전 임시). 단위 cm, chest_cm 은 가슴 '단면(반폭)'.",
+  "garments": {
+    "E_red_suede": {
+      "label": "레드 스웨이드 트러커",
+      "length_cm": 58,
+      "shoulder_cm": 40,
+      "chest_cm": 48,
+      "source": "manual_estimate"
+    },
+    "G_suede_shearling": {
+      "label": "탠 스웨이드 봄버 (무통 카라)",
+      "length_cm": 62,
+      "shoulder_cm": 46,
+      "chest_cm": 55,
+      "source": "manual_estimate"
+    },
+    "H_pleated_olive": {
+      "label": "올리브 플리츠 하이넥",
+      "length_cm": 64,
+      "shoulder_cm": 50,
+      "chest_cm": 58,
+      "source": "manual_estimate"
+    },
+    "I_carhartt_denim": {
+      "label": "카하트 워시드 데님 워크자켓",
+      "length_cm": 62,
+      "shoulder_cm": 45,
+      "chest_cm": 54,
+      "source": "manual_estimate"
+    },
+    "F_puffer_vest": {
+      "label": "세이지 퍼퍼 베스트",
+      "length_cm": 58,
+      "shoulder_cm": 44,
+      "chest_cm": 56,
+      "source": "manual_estimate"
+    },
+    "D_plaid_flannel": {
+      "label": "버건디 버팔로 체크 플란넬",
+      "length_cm": 78,
+      "shoulder_cm": 52,
+      "chest_cm": 62,
+      "source": "manual_estimate"
+    },
+    "K_footwork_tee": {
+      "label": "퍼블릭포제션 Footwork 반팔티 (L)",
+      "length_cm": 75.0,
+      "shoulder_cm": 54.0,
+      "chest_cm": 57.0,
+      "source": "crawled",
+      "source_url": "https://fruitsfamily.com/product/5l000/%ED%8D%BC%EB%B8%94%EB%A6%AD%ED%8F%AC%EC%A0%9C%EC%85%98-%EB%B0%98%ED%8C%94%ED%8B%B0-l-%ED%8C%90%EB%A7%A4-%EB%82%A8%EB%85%80%EA%B3%B5%EC%9A%A9",
+      "title": "퍼블릭포제션 반팔티 L 판매 남녀공용"
+    }
+  }
+}

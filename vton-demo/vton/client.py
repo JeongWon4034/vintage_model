@@ -15,17 +15,21 @@ from pathlib import Path
 import settings
 
 
-def get_client(space: str, conn_retries: int = 6, wait: float = 5.0):
-    """Space 연결. config-fetch 가 자주 실패해서(슬립/재시작) 재시도한다."""
+def get_client(space: str, conn_retries: int = 6, wait: float = 5.0, token: str | None = None):
+    """Space 연결. config-fetch 가 자주 실패해서(슬립/재시작) 재시도한다.
+
+    token 을 명시하면 그 토큰으로, 없으면 settings.HF_TOKEN 사용.
+    """
     import time
 
     from gradio_client import Client
 
+    tok = token if token is not None else settings.HF_TOKEN
     last = None
     for i in range(conn_retries):
         try:
             # gradio_client >= 2.x 는 token 인자 사용 (구버전 hf_token 아님)
-            return Client(space, token=settings.HF_TOKEN, verbose=False)
+            return Client(space, token=tok, verbose=False)
         except Exception as e:  # noqa: BLE001
             last = e
             if i < conn_retries - 1:

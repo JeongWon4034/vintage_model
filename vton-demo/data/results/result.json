@@ -1,0 +1,214 @@
+{
+  "generated_at": 1785218578.39409,
+  "space": "yisol/IDM-VTON",
+  "model": {
+    "name": "female_hf_01.png",
+    "height_cm": 168,
+    "shoulder_cm": 38,
+    "chest_cm": 84
+  },
+  "items": [
+    {
+      "model": "female_hf_01.png",
+      "garment": "K_footwork_tee.jpg",
+      "garment_key": "K_footwork_tee",
+      "result": "measured_footwork_75.png",
+      "ok": true,
+      "error": null,
+      "seconds": 51.7,
+      "applied_length_cm": 75,
+      "spec": {
+        "label": "퍼블릭포제션 Footwork 반팔티 (L)",
+        "length_cm": 75.0,
+        "shoulder_cm": 54.0,
+        "chest_cm": 57.0,
+        "source": "crawled",
+        "source_url": "https://fruitsfamily.com/product/5l000/%ED%8D%BC%EB%B8%94%EB%A6%AD%ED%8F%AC%EC%A0%9C%EC%85%98-%EB%B0%98%ED%8C%94%ED%8B%B0-l-%ED%8C%90%EB%A7%A4-%EB%82%A8%EB%85%80%EA%B3%B5%EC%9A%A9"
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "롱 — 엉덩이 덮음",
+        "reasons": [
+          "어깨 +16.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +30.0cm · 품이 매우 넉넉"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "E_red_suede.jpg",
+      "garment_key": "E_red_suede",
+      "result": "measured_redsuede_58.png",
+      "ok": true,
+      "error": null,
+      "seconds": 44.2,
+      "applied_length_cm": 58,
+      "spec": {
+        "label": "레드 스웨이드 트러커",
+        "length_cm": 58,
+        "shoulder_cm": 40,
+        "chest_cm": 48,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "세미오버",
+        "length_note": "숏 — 허리선",
+        "reasons": [
+          "어깨 +2.0cm · 어깨가 맞음",
+          "가슴둘레 +12.0cm · 품에 여유"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "I_carhartt_denim.jpg",
+      "garment_key": "I_carhartt_denim",
+      "result": "measured_carhartt_62_fix.png",
+      "ok": true,
+      "error": null,
+      "seconds": 42.6,
+      "applied_length_cm": 62,
+      "spec": {
+        "label": "카하트 워시드 데님 워크자켓",
+        "length_cm": 62,
+        "shoulder_cm": 45,
+        "chest_cm": 54,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "베이직 — 골반 위",
+        "reasons": [
+          "어깨 +7.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +24.0cm · 품이 매우 넉넉"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "G_suede_shearling.jpg",
+      "garment_key": "G_suede_shearling",
+      "result": "female_hf_01__G_suede_shearling.png",
+      "ok": true,
+      "error": null,
+      "seconds": 28.7,
+      "applied_length_cm": null,
+      "spec": {
+        "label": "탠 스웨이드 봄버 (무통 카라)",
+        "length_cm": 62,
+        "shoulder_cm": 46,
+        "chest_cm": 55,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "베이직 — 골반 위",
+        "reasons": [
+          "어깨 +8.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +26.0cm · 품이 매우 넉넉"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "H_pleated_olive.jpg",
+      "garment_key": "H_pleated_olive",
+      "result": "female_hf_01__H_pleated_olive.png",
+      "ok": true,
+      "error": null,
+      "seconds": 27.9,
+      "applied_length_cm": null,
+      "spec": {
+        "label": "올리브 플리츠 하이넥",
+        "length_cm": 64,
+        "shoulder_cm": 50,
+        "chest_cm": 58,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "베이직 — 골반 위",
+        "reasons": [
+          "어깨 +12.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +32.0cm · 품이 매우 넉넉"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "F_puffer_vest.jpg",
+      "garment_key": "F_puffer_vest",
+      "result": "female_hf_01__F_puffer.png",
+      "ok": true,
+      "error": null,
+      "seconds": 39.0,
+      "applied_length_cm": null,
+      "spec": {
+        "label": "세이지 퍼퍼 베스트",
+        "length_cm": 58,
+        "shoulder_cm": 44,
+        "chest_cm": 56,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "숏 — 허리선",
+        "reasons": [
+          "어깨 +6.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +28.0cm · 품이 매우 넉넉"
+        ]
+      }
+    },
+    {
+      "model": "female_hf_01.png",
+      "garment": "D_plaid_flannel.jpg",
+      "garment_key": "D_plaid_flannel",
+      "result": "female_hf_01__D_plaid.png",
+      "ok": true,
+      "error": null,
+      "seconds": 34.9,
+      "applied_length_cm": null,
+      "spec": {
+        "label": "버건디 버팔로 체크 플란넬",
+        "length_cm": 78,
+        "shoulder_cm": 52,
+        "chest_cm": 62,
+        "source": "manual_estimate",
+        "source_url": null
+      },
+      "fit": {
+        "label": "오버핏",
+        "length_note": "맥시 — 허벅지까지",
+        "reasons": [
+          "어깨 +14.0cm · 어깨가 많이 떨어짐",
+          "가슴둘레 +40.0cm · 품이 매우 넉넉"
+        ]
+      }
+    }
+  ],
+  "length_series": {
+    "garment_key": "E_red_suede",
+    "frames": [
+      {
+        "length_cm": 58,
+        "result": "len_redsuede_58.png",
+        "sample": "length_58.jpg"
+      },
+      {
+        "length_cm": 70,
+        "result": "len_redsuede_70.png",
+        "sample": "length_70.jpg"
+      },
+      {
+        "length_cm": 85,
+        "result": "len_redsuede_85.png",
+        "sample": "length_85.jpg"
+      }
+    ]
+  }
+}

@@ -39,21 +39,37 @@ ANGLE_PROMPTS = {
 
 
 def _edit_via_space(src: Path, prompt: str) -> Path:
-    """ZeroGPU Space(무료 쿼터)로 Kontext 편집. 결과 이미지 로컬 경로 반환."""
+    """ZeroGPU Space(무료 쿼터)로 Kontext 편집. 결과 이미지 로컬 경로 반환.
+
+    토큰이 여러 개면(.env 의 HF_TOKENS) 무료 쿼터가 소진될 때마다 다음 토큰으로 넘어간다.
+    """
     from gradio_client import Client, handle_file
 
-    client = Client(EDIT_SPACE, token=settings.HF_TOKEN, verbose=False)
-    result, _seed = client.predict(
-        handle_file(str(src)),
-        prompt,
-        0,      # seed
-        False,  # randomize_seed — 재현성 위해 고정
-        2.5,    # guidance_scale
-        28,     # steps
-        api_name="/infer",
-    )
-    path = result["path"] if isinstance(result, dict) else result
-    return Path(path)
+    tokens = settings.HF_TOKENS or [settings.HF_TOKEN]
+    last: Exception | None = None
+    for ti, tok in enumerate(tokens, 1):
+        try:
+            client = Client(EDIT_SPACE, token=tok, verbose=False)
+            result, _seed = client.predict(
+                handle_file(str(src)),
+                prompt,
+                0,      # seed
+                False,  # randomize_seed — 재현성 위해 고정
+                2.5,    # guidance_scale
+                28,     # steps
+                api_name="/infer",
+            )
+            path = result["path"] if isinstance(result, dict) else result
+            return Path(path)
+        except Exception as e:  # noqa: BLE001
+            last = e
+            low = str(e).lower()
+            if ("acceleratorerror" in low or "quota" in low
+                    or "zerogpu" in low or "exceeded" in low or "no gpu" in low):
+                print(f"[angles]   토큰#{ti} 쿼터소진 → 다음 토큰")
+                continue
+            raise
+    raise RuntimeError(f"모든 토큰 실패: {last}")
 
 
 def _edit_via_providers(src: Path, prompt: str):
@@ -67,9 +83,12 @@ def _edit_via_providers(src: Path, prompt: str):
 def generate(model_stem: str, angles: list[int], use_providers: bool = False) -> list[Path]:
     if not settings.HF_TOKEN:
         raise SystemExit("HF_TOKEN 이 필요합니다 (.env)")
-    src = settings.MODELS_DIR / f"{model_stem}.jpg"
-    if not src.exists():
-        raise SystemExit(f"모델 이미지가 없습니다: {src}")
+    # 모델 파일은 .jpg 뿐 아니라 .png 로도 들어온다 (힉스필드 생성컷 등)
+    src = next((settings.MODELS_DIR / f"{model_stem}{e}"
+                for e in (".jpg", ".png", ".jpeg", ".webp")
+                if (settings.MODELS_DIR / f"{model_stem}{e}").exists()), None)
+    if src is None:
+        raise SystemExit(f"모델 이미지가 없습니다: {settings.MODELS_DIR / model_stem}.*")
 
     out_dir = settings.MODELS_DIR / "angles"
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -1,18 +1,17 @@
 # VTON 데모 — 빈티지 아이템 가상 피팅
 
-fruitsfamily.com 에서 빈티지 옷 사진을 크롤링해, **오픈 diffusion VTON 모델(IDM-VTON)** 로
-고정된 AI 모델에게 입혀 보는 데모입니다. 이 계열 모델이 **우리 실사용자 데이터**에서
-얼마나 쓸 만한지 눈으로 검증하는 것이 목적입니다.
+fruitsfamily.com 의 빈티지 옷을 **오픈 diffusion VTON 모델(IDM-VTON)** 로 고정 AI 모델에게
+입혀 보는 데모입니다. 판매자가 적어 둔 **실측(총장)** 을 반영해 옷 길이를 제어하고,
+어깨·가슴 실측을 모델 치수와 비교해 **핏(오버핏/정핏/타이트)** 까지 함께 내려줍니다.
 
-- 블랙박스 LLM(Gemini)이 아니라 **실제 오픈소스 diffusion 모델**을 구동합니다.
-- 로컬 GPU 없이 **HF Space(`yisol/IDM-VTON`) + HF 토큰**으로 모델을 돌립니다.
-- 지금은 **정면 1각도**. 360°는 `viewer.js` 의 `SpinViewer` 로 확장 가능하게 구조만 잡아뒀습니다.
+- 로컬 GPU 없이 **HF Space + HF 토큰(무료 쿼터)** 으로 모델을 구동합니다.
+- 토큰을 여러 개 넣으면 쿼터가 소진될 때마다 **자동 로테이션** 합니다.
 
 ```
-크롤링(Playwright) → 배경제거(rembg) → IDM-VTON 피팅(gradio_client) → 웹 갤러리(FastAPI)
+크롤(Playwright) → 실측 파싱 → 모델 계측(px/cm) → 총장 마스크 → IDM-VTON → API/갤러리
 ```
 
-## 빠른 시작 (로컬)
+## 빠른 시작
 
 ```bash
 cd vton-demo
@@ -21,58 +20,125 @@ cd vton-demo
 pip install -r requirements.txt
 playwright install chromium
 
-# 2) HF 토큰 설정  (https://huggingface.co/settings/tokens · read 권한이면 충분)
+# 2) HF 토큰  (https://huggingface.co/settings/tokens · read 권한이면 충분)
 cp .env.example .env
-#   .env 를 열어 HF_TOKEN=hf_... 채우기
+#   HF_TOKEN=hf_...              단일 토큰
+#   HF_TOKENS=hf_a,hf_b,hf_c     (선택) 쿼터 소진 시 자동 전환
 
-# 3) end-to-end 실행 (옷 3장 크롤 → 피팅)
-python scripts/run_demo.py --count 3
-
-# 4) 결과 갤러리
-uvicorn app.server:app --port 8000
-#   → http://localhost:8000
+# 3) API 서버
+uvicorn app.server:app --reload --port 8000
+#   → http://localhost:8000        데모 갤러리
+#   → http://localhost:8000/docs   Swagger
 ```
 
-`make` 단축키도 있습니다: `make install`, `make demo COUNT=3`, `make serve`.
+`make install`, `make demo COUNT=3`, `make serve` 단축키도 있습니다.
 
-## Docker
+## 프론트엔드 연동
+
+CORS 는 열려 있어 별도 포트(Vite 5173 / Next 3000 등)에서 바로 호출할 수 있습니다.
+**저장소만 클론해도** `data/samples/` 의 경량 이미지로 화면을 붙일 수 있습니다
+(원본 고해상도 결과는 용량 때문에 git 에서 제외).
+
+| 엔드포인트 | 설명 |
+|---|---|
+| `GET /api/health` | 상태 + 피팅 건수 |
+| `GET /api/model` | 고정 모델 스펙(키/어깨/가슴) + 360° 프레임 |
+| `GET /api/fittings` | **메인.** 피팅 결과 + 옷 실측 + 핏 판정 |
+| `GET /api/fittings/{garment_key}` | 단건 조회 |
+| `GET /api/length-series` | 같은 옷 총장별 비교 세트 |
+| `GET /api/garment-specs` | 옷 실측 원본(크롤/추정 구분) |
+| `GET /img/{kind}/{name}` | 이미지. kind = `model` \| `angle` \| `garment` \| `result` \| `sample` |
+
+`/api/fittings` 응답 예시:
+
+```jsonc
+{
+  "model": { "name": "female_hf_01.png", "height_cm": 168, "shoulder_cm": 38, "chest_cm": 84 },
+  "count": 7,
+  "items": [{
+    "garment_key": "K_footwork_tee",
+    "applied_length_cm": 75,              // 이 총장으로 마스크를 만들어 렌더함
+    "spec": {
+      "label": "퍼블릭포제션 Footwork 반팔티 (L)",
+      "length_cm": 75, "shoulder_cm": 54, "chest_cm": 57,
+      "source": "crawled",                // crawled = 판매자 실측, manual_estimate = 추정치
+      "source_url": "https://fruitsfamily.com/product/..."
+    },
+    "fit": {
+      "label": "오버핏",
+      "length_note": "롱 — 엉덩이 덮음",
+      "reasons": ["어깨 +16.0cm · 어깨가 많이 떨어짐", "가슴둘레 +30.0cm · 품이 매우 넉넉"]
+    },
+    "images": {
+      "garment": "/img/garment/K_footwork_tee.jpg",       // 원본(로컬 생성 시)
+      "result":  "/img/result/measured_footwork_75.png",
+      "garment_sample": "/img/sample/K_footwork_tee__garment.jpg",  // 저장소 포함(권장)
+      "result_sample":  "/img/sample/K_footwork_tee__result.jpg"
+    }
+  }]
+}
+```
+
+> **UI 주의**: `spec.source` 가 `manual_estimate` 인 항목은 실측이 아니라 추정치이므로,
+> 화면에서 "추정" 표기를 함께 노출해야 합니다. 결과 이미지에는 **"AI 가상 피팅"** 배지 필수(NFR-09).
+
+## 실측 기반 피팅 실행
 
 ```bash
-docker compose build
-docker compose run --rm app python scripts/run_demo.py --count 3   # 크롤+피팅
-docker compose up                                                  # http://localhost:8000
+# 모델 계측 (px/cm 산출 · 검증 오버레이 저장)
+python -m vton.metrics --model female_hf_01.png --height 168 --debug debug.jpg
+
+# 총장(cm)을 지정해 피팅
+python scripts/fit_measured.py --model female_hf_01.png \
+  --garment data/garments/E_red_suede.jpg --length 58 \
+  --out measured_redsuede_58.png --des "a red suede trucker jacket"
+
+# 결과 인덱스 + 프론트 샘플 재생성
+python scripts/build_index.py
 ```
-(`.env` 의 `HF_TOKEN` 이 컨테이너로 전달됩니다.)
+
+주요 옵션: `--length`(총장cm) `--widen`(오버핏 여유) `--neck-drop` `--no-arms` `--steps` `--seed`
 
 ## 구성 요소
 
 | 경로 | 역할 |
 |---|---|
-| `crawler/fruitsfamily.py` | Playwright 로 SPA 렌더 → 상품 이미지 CDN URL 스크랩 → 다운로드 |
-| `vton/client.py` | `gradio_client` 로 IDM-VTON Space 호출 (폴백 Space 재시도) |
-| `vton/preprocess.py` | rembg 배경 제거 + 부적합 이미지 러프 필터 |
-| `vton/pipeline.py` | (모델 × 옷) 조합 피팅 → `data/results/` + `result.json` |
-| `app/server.py` + `static/` | 결과 갤러리 (FastAPI) |
-| `scripts/run_demo.py` | end-to-end 러너 |
-| `config.yaml` | Space·크롤·전처리·경로 설정 |
+| `crawler/fruitsfamily.py` | 상품 이미지 스크랩 |
+| `crawler/linked.py` | **상품 링크 + 이미지 + 실측**을 한 세트로 수집 |
+| `crawler/product_detail.py` | 상세 본문에서 총장/어깨/가슴 파싱 |
+| `vton/metrics.py` | 모델 사진 계측 → `px_per_cm` 환산 |
+| `vton/masking.py` | 총장(cm) → 마스크 생성 |
+| `vton/fitlabel.py` | 실측 vs 모델 치수 → 핏 라벨 |
+| `vton/client.py` | IDM-VTON Space 호출(폴백·토큰 로테이션) |
+| `scripts/fit_measured.py` | 실측 기반 피팅 러너 |
+| `scripts/ab_engines.py` | 엔진 A/B (IDM-VTON·OOTD·Leffa·CatVTON) |
+| `scripts/build_index.py` | `result.json` + 프론트 샘플 생성 |
+| `app/server.py` | API + 갤러리 (FastAPI) |
 
-## 입력 데이터
+## ⚠️ 검증으로 확인된 한계
 
-- **모델(사람)**: `models/` 에 정면 전신 인물 이미지. 없으면 `python scripts/fetch_sample_model.py` 가 공개 예제 인물 1장을 받아 옵니다. 여러 명 넣으면 모두 사용.
-- **옷**: `crawler` 가 `data/garments/` 에 채웁니다. **크롤러를 건너뛰고** 직접 이미지를 넣어도 됩니다(`--skip-crawl`).
+성능 자체보다 **어떤 옷에서 쓸 만한지**가 이 데모의 결론입니다.
 
-## ⚠️ 알아둘 한계 (중요)
+| 옷 유형 | 결과 |
+|---|---|
+| 솔리드 질감 (스웨이드·무통·플리츠·누빔·워시드) | ✅ 아주 좋음 |
+| 전면 반복 패턴 (체크·스트라이프·니트 골) | 🔸 무난 |
+| 크고 단순한 아웃라인 그래픽 | 🔸 형태는 유지 |
+| 국소 프린트·로고·**잔글씨** | ❌ 재창작되어 깨짐 |
 
-- **입력 사진 품질이 결과의 8할.** IDM-VTON 은 *깨끗한 정면 상품컷 + 정면 전신 인물*을 전제로 학습됐습니다.
-  fruitsfamily 는 착용샷·마네킹샷·바닥 플랫레이가 섞여 있어 **유형에 따라 결과 편차가 큽니다.**
-  → 이 데모의 목적은 "어떤 유형이 잘 나오고 어떤 게 깨지는지"를 확인하는 것.
-- **HF Space 큐/콜드스타트**로 첫 호출이 느리거나(수십 초~분) 실패할 수 있습니다. 토큰을 넣으면 완화됩니다.
-  자주 쓸 거면 Space 를 본인 계정으로 **Duplicate** 해서 전용으로 쓰는 걸 권장합니다.
-- Space API 파라미터가 바뀌면: `python -m vton.client --inspect` 로 시그니처 확인 후 `vton/client.py` 조정.
-- **표기 의무**: 결과에는 "AI 가상 피팅" 배지를 답니다(실제 착용 아님). 서비스 반영 시 NFR-09(AI 생성 표기) 준수.
+- **잔글씨는 어떤 파라미터로도 못 살립니다.** diffusion 이 옷을 다시 그리는 방식이라 원본 픽셀이 보존되지 않습니다.
+  엔진 A/B 결과 프린트 보존은 `OOTDiffusion > Leffa > IDM-VTON` 이지만, OOTD 는 해상도·얼굴·소매가 망가져
+  상품컷으로 쓰기 어렵습니다. 프린트가 중요하면 상용 API 검토가 필요합니다.
+- **실측 기재율이 낮습니다.** 표본 45건 중 숫자 검출 11건(24%), 총장+어깨+가슴 3종 완비는 3건(7%).
+  판매자 자유 입력이라, 서비스화하려면 *사용자 직접 입력* 또는 *카테고리 표준 치수 폴백*이 필요합니다.
+- **상품 이미지는 620px 고정.** CDN 이 `resized@width620` 외 요청을 403 으로 막습니다(원본 경로도 차단).
+- 검색 파라미터 `?q=` 는 실제 키워드 필터가 아닙니다(인기 피드 반환). 카테고리 필터(`subcategoryIds`)를 써야 합니다.
+- **핏 판정은 참고용**입니다. 길이는 실측으로 제어되지만, 원단이 눌리고 당겨지는 *물리 시뮬레이션은 아닙니다*
+  (그건 3D 의류 시뮬레이터 영역).
+- Space API 파라미터가 바뀌면 `python -m vton.client --inspect` 로 시그니처 확인 후 조정.
 
-## 다음 단계 아이디어
+## 다음 단계
 
-- 유형별 결과 비교 후 전처리 강화(착용샷→옷만 추출) 또는 모델 교체(Leffa/CatVTON).
-- 360°: 같은 인물의 각도별 이미지 준비(또는 pose-transfer 합성) → 각도별 피팅 → `SpinViewer` 연결.
-- 상품 카드 파이프라인과 연결: 피팅 결과 이미지를 상품 카드 `image` 필드로.
+- 모델 3명 확장: `models/` 에 체형별 컷 추가 + `config.yaml` 의 `model_spec.height_cm` 지정 → 같은 옷을 체형별 비교.
+- 실측 없는 상품용 폴백(카테고리 표준 치수 / 사용자 입력).
+- 상품 카드 파이프라인 연결: 피팅 결과를 상품 카드 이미지로.

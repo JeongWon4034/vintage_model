@@ -22,7 +22,18 @@ with open(ROOT / "config.yaml", "r", encoding="utf-8") as f:
 # --- 자주 쓰는 값 단축 접근 ---
 HF_TOKEN: str | None = os.environ.get("HF_TOKEN") or None
 
+# 여러 토큰 로테이션용 (HF_TOKENS=tok1,tok2,...). 없으면 HF_TOKEN 하나만.
+def _parse_tokens() -> list[str]:
+    raw = os.environ.get("HF_TOKENS", "") or ""
+    toks = [t.strip() for t in raw.split(",") if t.strip()]
+    if HF_TOKEN and HF_TOKEN not in toks:
+        toks.insert(0, HF_TOKEN)
+    return toks
+
+HF_TOKENS: list[str] = _parse_tokens()
+
 VTON = CONFIG["vton"]
+MODEL_SPEC = CONFIG.get("model_spec", {"height_cm": 168})
 CRAWLER = CONFIG["crawler"]
 PREPROCESS = CONFIG["preprocess"]
 
